@@ -24,19 +24,21 @@ addBtn.onclick =  function(){
     displayProducts(productList);
 }
 function addProduct(){
-    var productObj ={
-        pName: productName.value,
-        pPrice: productPrice.value,
-        pCat: productCategory.value,
-        pDesc: productDesc.value,
-        pImg:`./../imgs/${productImg.files[0].name}`
-    }
-    // console.log(productObj);
-    productList.push(productObj);
-    //array of objects====>json ===>java script object notaion 
-    //json.stringify====>convert array of object to string
-    localStorage.setItem('productList',JSON.stringify(productList));
-    // console.log(productList);
+   
+        var productObj ={
+            pName: productName.value,
+            pPrice: productPrice.value,
+            pCat: productCategory.value,
+            pDesc: productDesc.value,
+            pImg:`./assets/imgs/${productImg.files[0].name}`
+        }
+        // console.log(productObj);
+        productList.push(productObj);
+        //array of objects====>json ===>java script object notaion 
+        //json.stringify====>convert array of object to string
+        localStorage.setItem('productList',JSON.stringify(productList));
+        // console.log(productList);
+    
     
 }
 function clearForm(){
@@ -44,7 +46,12 @@ function clearForm(){
         productPrice.value=null;
         productCategory.value=null;
         productDesc.value=null;
-        // productImg.value=null;
+        productImg.value=null;
+        productName.classList.remove("is-valid");
+        productPrice.classList.remove("is-valid");
+        productDesc.classList.remove("is-valid");
+        productCategory.classList.remove("is-valid");
+        productImg.classList.remove("is-valid");
     
 }
 function displayProducts(productList){
@@ -65,8 +72,8 @@ function displayProducts(productList){
               <h4 class="h5">${productList[i].pPrice}$</h4>
             </div>
             <div class="d-flex justify-content-end flex-wrap mb-2">
-          <button class="btn btn-outline-warning form-control w-50 me-1 mb-3" onclick="editForUpdate(${i})">Update <i class="fa-regular fa-pen-to-square"></i></button>
-          <button class="btn btn-outline-danger form-control w-50 me-1" onclick="deleteProduct(${i})">Delete <i class="fa-solid fa-trash"></i></button>
+          <button class="btn btn-outline-warning form-control w-100 me-1 mb-3" onclick="editForUpdate(${i})">Update <i class="fa-regular fa-pen-to-square"></i></button>
+          <button class="btn btn-outline-danger form-control w-100 me-1" onclick="deleteProduct(${i})">Delete <i class="fa-solid fa-trash"></i></button>
         </div>
           </div>
         </div>`;
@@ -103,6 +110,8 @@ function editForUpdate(index){
     productPrice.value=productList[index].pPrice;
     productCategory.value=productList[index].pCat;
     productDesc.value=productList[index].pDesc;
+    productImg.value=productList[index].pImg;
+    // `./assets/imgs/${productImg.files[0].name}`=productList[index].pImg;
 
 }
 
@@ -114,6 +123,7 @@ updateBtn.onclick = function(){
     productList[globalIndex].pPrice=productPrice.value;
     productList[globalIndex].pCat= productCategory.value;
     productList[globalIndex].pDesc=productDesc.value;
+    productList[globalIndex].pImg=`./assets/imgs/${productImg.files[0].name}`;
     clearForm(); 
     localStorage.setItem('productList',JSON.stringify(productList));
     displayProducts(productList);
@@ -156,12 +166,61 @@ function searchedProduct(){
 // console.log(txt.padEnd(40,'emo'));
 
 
+/******regular expression***** */
+// var x=//;
+// var y=new RegExp("");
+
+
+// var x=/ab/;//====>any string contain 'ab'
+// var x=/[abc]/;//any string contain a or b or c or all or two of them
+// var x=/[a-z0-9#]/;//ang string contain any char from a to z or from 0 to 9 or #
+// var x=/web[a-z0-9#]web/;//web+ any char from []+web
+// var x=/web[a-z]{3}web/;// you will write three charchter from a-z
+// var x=/web[a-z]{3,5}web/;//the max is 5 and min is 3
+// var x=/web[a-z]{0,1}web/;//put nothing or 1
+// var x=/web[a-z]{0,}web/;//noting or infinite
+// var x=/web(designer|devloper)web/;//write designer or devloper
+// var x=/web(designer|devloper){2}web/;//write designer or devloper twice or dsigner and devloper
+// var x= /web[^abc]web/;//anything rather than a or b or c (complement if it's in the square practis)
+
+// var x=/01[0152][0-9]{8}/;//pattern for any egypt's number
+// this examble is true but if the user enter ===>
+// ===> 'emandnsfjks01020768625jdskjfdjk' it will match!!!!!!
+// how to solve this??????????????????
+// var x=/^01[0152][0-9]{8}$/;// ^ start with   $ end with
+
+//[0-9]== \d
+//[0-9a-zA-Z_]==\w
+// . ==> anything
+// pattern for ipv4 ===>^((1?[0-9]{1,2}|(2)[0-5]{2})\.){3}(1?[0-9]{1,2}|(1,2)[0-5]{2})$
+/////******* made by me********* */
 
 
 
 
-
-
-
-
-
+function validateInputs(element){
+    // console.log(element.value,element.id);
+    
+    var regex={
+        productName:/^[A-Z][a-z]{3,7}$/,
+        productPrice:/^[1-9][0-9]{1,4}\.[0-9]{1,2}$/,
+        productDesc:/^.{6,}$/,
+        productCategory:/^(mobile|ipad|labtop)$/
+    }
+    if(regex[element.id].test(element.value))
+    {
+        element.classList.add("is-valid");
+        element.classList.remove("is-invalid");
+        element.nextElementSibling.classList.replace('d-block','d-none');
+        return true;
+    }
+    else 
+    {
+        element.classList.add("is-invalid");
+        element.classList.remove("is-valid");
+        element.nextElementSibling.classList.replace('d-none','d-block');
+        return false;
+    }
+    
+        
+}
